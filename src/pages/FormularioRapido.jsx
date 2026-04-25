@@ -14,7 +14,7 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
   const gerarDescricao = (categoriaSelecionada) => {
     switch (categoriaSelecionada) {
       case "lixo":
-        return "Acúmulo de lixo em terreno baldio, causando mau cheiro e risco à saúde, endereço [insira aqui].";
+        return "Acúmulo de lixo UIem terreno baldio, causando mau cheiro e risco à saúde, endereço [insira aqui].";
       case "mato":
         return "Terreno com mato alto, podendo abrigar animais e causar riscos, endereço [insira aqui].";
       case "mosquito":
