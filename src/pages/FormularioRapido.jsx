@@ -10,6 +10,20 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
     return "DEN-" + Math.floor(Math.random() * 100000);
   };
 
+  // ✅ FUNÇÃO DE DESCRIÇÃO AUTOMÁTICA
+  const gerarDescricao = (categoriaSelecionada) => {
+    switch (categoriaSelecionada) {
+      case "lixo":
+        return "Acúmulo de lixo em terreno baldio, causando mau cheiro e risco à saúde, endereço [insira aqui].";
+      case "mato":
+        return "Terreno com mato alto, podendo abrigar animais e causar riscos, endereço [insira aqui].";
+      case "mosquito":
+        return "Terreno com mato alto e possível foco de mosquito, endereço [insira aqui].";
+      default:
+        return "";
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -30,7 +44,6 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
 
     setDenuncias((prev) => [...prev, novaDenuncia]);
 
-    // ✅ NOTIFICAÇÃO NO LUGAR CERTO
     setNotificacoes((prev) => [
       {
         mensagem: "Sua denúncia foi enviada com sucesso",
@@ -62,7 +75,11 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
             <select
               className="w-full mt-1 p-3 border rounded-xl"
               value={categoria}
-              onChange={(e) => setCategoria(e.target.value)}
+              onChange={(e) => {
+                const valor = e.target.value;
+                setCategoria(valor);
+                setDescricao(gerarDescricao(valor)); // ✅ preenche automático
+              }}
             >
               <option value="">Selecione uma categoria</option>
               <option value="lixo">🗑️ Lixo</option>
@@ -75,7 +92,7 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
           <div>
             <label className="text-sm text-gray-600">Descrição</label>
             <textarea
-              placeholder="Descreva o problema..."
+              placeholder="Descreva o problema ou selecione uma categoria..."
               className="w-full mt-1 p-3 border rounded-xl"
               rows="4"
               value={descricao}
