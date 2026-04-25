@@ -10,7 +10,7 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
     return "DEN-" + Math.floor(Math.random() * 100000);
   };
 
-  // ✅ FUNÇÃO DE DESCRIÇÃO AUTOMÁTICA
+  // ✅ DESCRIÇÃO AUTOMÁTICA
   const gerarDescricao = (categoriaSelecionada) => {
     switch (categoriaSelecionada) {
       case "lixo":
@@ -19,6 +19,8 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
         return "Terreno com mato alto, podendo abrigar animais e causar riscos, endereço [insira aqui].";
       case "mosquito":
         return "Terreno com mato alto e possível foco de mosquito, endereço [insira aqui].";
+      case "outro":
+        return "Problema identificado no terreno que não se enquadra nas categorias anteriores, endereço [insira aqui].";
       default:
         return "";
     }
@@ -78,14 +80,20 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
               onChange={(e) => {
                 const valor = e.target.value;
                 setCategoria(valor);
-                setDescricao(gerarDescricao(valor)); // ✅ preenche automático
+                setDescricao(gerarDescricao(valor));
               }}
             >
               <option value="">Selecione uma categoria</option>
               <option value="lixo">🗑️ Lixo</option>
               <option value="mato">🌿 Mato alto</option>
               <option value="mosquito">🦟 Foco de mosquito</option>
+              <option value="outro">📌 Outro problema</option>
             </select>
+
+            {/* 💡 orientação */}
+            <p className="text-xs text-gray-500 mt-1">
+              Este aplicativo é destinado a denúncias relacionadas a terrenos baldios.
+            </p>
           </div>
 
           {/* Descrição */}
@@ -100,7 +108,6 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
             />
           </div>
 
-          {/* Botão */}
           <button className="bg-green-600 text-white py-3 rounded-xl hover:bg-green-700">
             Enviar denúncia
           </button>
@@ -120,8 +127,13 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
             {protocolo}
           </p>
 
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-gray-500 mb-2">
             Guarde esse número para acompanhar sua denúncia.
+          </p>
+
+          {/* 🔥 DIFERENCIAL */}
+          <p className="text-sm text-gray-500 mb-4">
+            Sua denúncia será analisada. Caso não se enquadre nas finalidades do sistema, você será orientado.
           </p>
 
           <button
