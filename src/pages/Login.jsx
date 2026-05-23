@@ -73,6 +73,19 @@ function Login({ onLogin }) {
           {modoCadastro ? "Cadastrar" : "Entrar"}
         </button>
 
+        <button
+        onClick={() => {
+       alert(
+         "Você poderá enviar denúncias anonimamente, porém elas não ficarão salvas para acompanhamento futuro."
+          );
+
+     onLogin({ nome: "Visitante" });
+       }}
+      className="block mx-auto text-sm text-green-700 mt-4 underline"
+>
+                   Não quero criar conta
+        </button>
+
         <p
           className="text-center text-sm text-green-700 cursor-pointer"
           onClick={() => setModoCadastro(!modoCadastro)}

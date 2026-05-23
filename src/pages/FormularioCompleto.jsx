@@ -1,6 +1,15 @@
 import { useState } from "react";
+import {
+  CircleCheckBig,
+  BookOpen,
+} from "lucide-react";
 
-function FormularioCompleto({ setTela, setDenuncias, setNotificacoes }) {
+function FormularioCompleto({
+  setTela,
+  setDenuncias,
+  setNotificacoes,
+}) {
+
   const [passo, setPasso] = useState(1);
 
   const [categoria, setCategoria] = useState("");
@@ -17,9 +26,11 @@ function FormularioCompleto({ setTela, setDenuncias, setNotificacoes }) {
   };
 
   const proximo = () => setPasso(passo + 1);
+
   const voltar = () => setPasso(passo - 1);
 
   const handleSubmit = () => {
+
     const novoProtocolo = gerarProtocolo();
 
     const novaDenuncia = {
@@ -35,7 +46,8 @@ function FormularioCompleto({ setTela, setDenuncias, setNotificacoes }) {
 
     setNotificacoes((prev) => [
       {
-        mensagem: "Sua denúncia foi registrada e está em análise",
+        mensagem:
+          "Sua denúncia foi registrada e está em análise",
         data: new Date().toLocaleDateString(),
       },
       ...prev,
@@ -46,42 +58,64 @@ function FormularioCompleto({ setTela, setDenuncias, setNotificacoes }) {
   };
 
   const pegarLocalizacao = () => {
+
     if (!navigator.geolocation) {
       alert("Geolocalização não suportada");
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const { latitude, longitude } = pos.coords;
-      setCoords({ latitude, longitude });
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
 
-      try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
-        );
-        const data = await response.json();
+        const { latitude, longitude } = pos.coords;
 
-        if (data && data.address) {
-          const rua = data.address.road || "";
-          const bairro =
-            data.address.suburb ||
-            data.address.neighbourhood ||
-            data.address.village ||
-            "";
-          const cidade =
-            data.address.city ||
-            data.address.town ||
-            data.address.municipality ||
-            "";
+        setCoords({ latitude, longitude });
 
-          setEndereco(`${rua}, ${bairro} - ${cidade}`);
-        } else {
-          setEndereco(`Lat: ${latitude}, Lng: ${longitude}`);
+        try {
+
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+          );
+
+          const data = await response.json();
+
+          if (data && data.address) {
+
+            const rua = data.address.road || "";
+
+            const bairro =
+              data.address.suburb ||
+              data.address.neighbourhood ||
+              data.address.village ||
+              "";
+
+            const cidade =
+              data.address.city ||
+              data.address.town ||
+              data.address.municipality ||
+              "";
+
+            setEndereco(
+              `${rua}, ${bairro} - ${cidade}`
+            );
+
+          } else {
+
+            setEndereco(
+              `Lat: ${latitude}, Lng: ${longitude}`
+            );
+
+          }
+
+        } catch {
+
+          setEndereco(
+            `Lat: ${latitude}, Lng: ${longitude}`
+          );
+
         }
-      } catch {
-        setEndereco(`Lat: ${latitude}, Lng: ${longitude}`);
       }
-    });
+    );
   };
 
   return (
@@ -96,28 +130,49 @@ function FormularioCompleto({ setTela, setDenuncias, setNotificacoes }) {
       </p>
 
       {!enviado ? (
+
         <div className="bg-white p-5 rounded-2xl shadow-md flex flex-col gap-4">
 
           {/* PASSO 1 */}
           {passo === 1 && (
             <>
-              <h2 className="font-semibold text-green-700">Detalhes</h2>
+
+              <h2 className="font-semibold text-green-700">
+                Detalhes
+              </h2>
 
               <select
                 className="p-3 border rounded-xl"
                 value={categoria}
-                onChange={(e) => setCategoria(e.target.value)}
+                onChange={(e) =>
+                  setCategoria(e.target.value)
+                }
               >
-                <option value="">Selecione uma categoria</option>
-                <option value="lixo">🗑️ Lixo</option>
-                <option value="mato">🌿 Mato alto</option>
-                <option value="mosquito">🦟 Foco de mosquito</option>
-                <option value="outro">📌 Outro problema</option>
+                <option value="">
+                  Selecione uma categoria
+                </option>
+
+                <option value="lixo">
+                  🗑️ Lixo
+                </option>
+
+                <option value="mato">
+                  🌿 Mato alto
+                </option>
+
+                <option value="mosquito">
+                  🦟 Foco de mosquito
+                </option>
+
+                <option value="outro">
+                  📌 Outro problema
+                </option>
+
               </select>
 
-              {/* 💡 orientação */}
               <p className="text-xs text-gray-500">
-                Descreva com detalhes o problema encontrado no terreno.
+                Descreva com detalhes o problema
+                encontrado no terreno.
               </p>
 
               <textarea
@@ -125,35 +180,45 @@ function FormularioCompleto({ setTela, setDenuncias, setNotificacoes }) {
                 className="p-3 border rounded-xl"
                 rows="4"
                 value={descricao}
-                onChange={(e) => setDescricao(e.target.value)}
+                onChange={(e) =>
+                  setDescricao(e.target.value)
+                }
               />
 
               <button
                 onClick={() => {
+
                   if (!categoria || !descricao) {
                     alert("Preencha os campos!");
                     return;
                   }
+
                   proximo();
                 }}
                 className="bg-green-600 text-white py-2 rounded-xl"
               >
                 Próximo
               </button>
+
             </>
           )}
 
           {/* PASSO 2 */}
           {passo === 2 && (
             <>
-              <h2 className="font-semibold text-green-700">Localização</h2>
+
+              <h2 className="font-semibold text-green-700">
+                Localização
+              </h2>
 
               <input
                 type="text"
                 placeholder="Endereço completo"
                 className="p-3 border rounded-xl"
                 value={endereco}
-                onChange={(e) => setEndereco(e.target.value)}
+                onChange={(e) =>
+                  setEndereco(e.target.value)
+                }
               />
 
               <button
@@ -178,63 +243,100 @@ function FormularioCompleto({ setTela, setDenuncias, setNotificacoes }) {
               )}
 
               <div className="flex gap-2">
-                <button onClick={voltar} className="w-full border py-2 rounded-xl">
+
+                <button
+                  onClick={voltar}
+                  className="w-full border py-2 rounded-xl"
+                >
                   Voltar
                 </button>
 
                 <button
                   onClick={() => {
+
                     if (!endereco) {
                       alert("Informe o endereço!");
                       return;
                     }
+
                     proximo();
                   }}
                   className="w-full bg-green-600 text-white py-2 rounded-xl"
                 >
                   Próximo
                 </button>
+
               </div>
+
             </>
           )}
 
           {/* PASSO 3 */}
           {passo === 3 && (
             <>
-              <h2 className="font-semibold text-green-700">Mídia</h2>
+
+              <h2 className="font-semibold text-green-700">
+                Mídia
+              </h2>
 
               <input
                 type="file"
-                onChange={(e) => setImagem(e.target.files[0])}
+                onChange={(e) =>
+                  setImagem(e.target.files[0])
+                }
               />
 
               <div className="flex gap-2">
-                <button onClick={voltar} className="w-full border py-2 rounded-xl">
+
+                <button
+                  onClick={voltar}
+                  className="w-full border py-2 rounded-xl"
+                >
                   Voltar
                 </button>
 
-                <button onClick={proximo} className="w-full bg-green-600 text-white py-2 rounded-xl">
+                <button
+                  onClick={proximo}
+                  className="w-full bg-green-600 text-white py-2 rounded-xl"
+                >
                   Próximo
                 </button>
+
               </div>
+
             </>
           )}
 
           {/* PASSO 4 */}
           {passo === 4 && (
             <>
-              <h2 className="font-semibold text-green-700">Revisão</h2>
 
-              <p><strong>Categoria:</strong> {categoria}</p>
-              <p><strong>Descrição:</strong> {descricao}</p>
-              <p><strong>Endereço:</strong> {endereco}</p>
+              <h2 className="font-semibold text-green-700">
+                Revisão
+              </h2>
+
+              <p>
+                <strong>Categoria:</strong> {categoria}
+              </p>
+
+              <p>
+                <strong>Descrição:</strong> {descricao}
+              </p>
+
+              <p>
+                <strong>Endereço:</strong> {endereco}
+              </p>
 
               <p className="text-sm text-gray-500">
                 Data: {new Date().toLocaleDateString()}
               </p>
 
               <div className="flex gap-2 mt-2">
-                <button onClick={voltar} className="w-full border py-2 rounded-xl">
+
+                <button
+                  onClick={voltar}
+                  className="w-full border py-2 rounded-xl"
+                >
                   Voltar
                 </button>
 
@@ -244,34 +346,74 @@ function FormularioCompleto({ setTela, setDenuncias, setNotificacoes }) {
                 >
                   Confirmar denúncia
                 </button>
+
               </div>
+
             </>
           )}
+
         </div>
+
       ) : (
+
         <div className="bg-white p-5 rounded-2xl shadow-md text-center">
 
+          {/* ÍCONE */}
+          <div className="flex justify-center mb-3">
+
+            <CircleCheckBig
+              size={50}
+              className="text-green-600"
+            />
+
+          </div>
+
           <h2 className="text-green-700 text-xl font-bold mb-2">
-            ✅ Denúncia enviada!
+            Denúncia enviada!
           </h2>
 
-          <p className="text-gray-600 mb-2">Protocolo:</p>
+          {/* protocolo */}
+          <div className="flex items-center justify-center gap-2 mb-3">
+
+            <BookOpen
+              size={18}
+              className="text-green-700"
+            />
+
+            <p className="text-gray-700 font-medium">
+              Protocolo:
+            </p>
+
+          </div>
 
           <p className="text-green-700 font-bold text-lg mb-4">
             {protocolo}
           </p>
 
-          <p className="text-sm text-gray-500 mb-4">
-            Sua denúncia será analisada. Caso não se enquadre nas finalidades do sistema, você será orientado.
+          <p className="text-sm text-gray-500 mb-2">
+            Guarde esse número para acompanhar sua denúncia.
           </p>
+
+          {/* diferencial */}
+          <div className="bg-green-50 p-3 rounded-xl mb-4">
+
+            <p className="text-sm text-gray-600">
+              Sua denúncia será analisada.
+              Caso não se enquadre nas finalidades
+              do sistema, você será orientado.
+            </p>
+
+          </div>
 
           <button
             onClick={() => setTela("dashboard")}
-            className="bg-green-600 text-white py-2 px-4 rounded-xl"
+            className="bg-green-600 text-white py-2 px-4 rounded-xl hover:bg-green-700 transition"
           >
             Voltar ao início
           </button>
+
         </div>
+
       )}
 
       {!enviado && (
@@ -282,6 +424,7 @@ function FormularioCompleto({ setTela, setDenuncias, setNotificacoes }) {
           Cancelar
         </button>
       )}
+
     </div>
   );
 }

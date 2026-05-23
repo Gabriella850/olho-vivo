@@ -1,6 +1,20 @@
 import { useState } from "react";
+import {
+  Trash2,
+  Trees,
+  Bug,
+  FileWarning,
+  CircleCheckBig,
+  BookOpen,
+  ShieldAlert,
+} from "lucide-react";
 
-function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
+function FormularioRapido({
+  setTela,
+  setDenuncias,
+  setNotificacoes,
+}) {
+
   const [categoria, setCategoria] = useState("");
   const [descricao, setDescricao] = useState("");
   const [enviado, setEnviado] = useState(false);
@@ -12,21 +26,28 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
 
   // ✅ DESCRIÇÃO AUTOMÁTICA
   const gerarDescricao = (categoriaSelecionada) => {
+
     switch (categoriaSelecionada) {
+
       case "lixo":
         return "Acúmulo de lixo em terreno baldio, causando mau cheiro e risco à saúde, endereço [insira aqui].";
+
       case "mato":
         return "Terreno com mato alto, podendo abrigar animais e causar riscos, endereço [insira aqui].";
+
       case "mosquito":
         return "Terreno com mato alto e possível foco de mosquito, endereço [insira aqui].";
+
       case "outro":
         return "Problema identificado no terreno que não se enquadra nas categorias anteriores, endereço [insira aqui].";
+
       default:
         return "";
     }
   };
 
   const handleSubmit = (e) => {
+
     e.preventDefault();
 
     if (!categoria || !descricao) {
@@ -40,7 +61,7 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
       categoria,
       descricao,
       protocolo: novoProtocolo,
-      status: "Enviado",
+      status: "Recebido",
       data: new Date().toLocaleDateString(),
     };
 
@@ -66,6 +87,7 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
       </h1>
 
       {!enviado ? (
+
         <form
           onSubmit={handleSubmit}
           className="bg-white p-5 rounded-2xl shadow-md flex flex-col gap-4"
@@ -73,7 +95,11 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
 
           {/* Categoria */}
           <div>
-            <label className="text-sm text-gray-600">Categoria</label>
+
+            <label className="text-sm text-gray-600">
+              Categoria
+            </label>
+
             <select
               className="w-full mt-1 p-3 border rounded-xl"
               value={categoria}
@@ -83,45 +109,103 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
                 setDescricao(gerarDescricao(valor));
               }}
             >
-              <option value="">Selecione uma categoria</option>
-              <option value="lixo">🗑️ Lixo</option>
-              <option value="mato">🌿 Mato alto</option>
-              <option value="mosquito">🦟 Foco de mosquito</option>
-              <option value="outro">📌 Outro problema</option>
+
+              <option value="">
+                Selecione uma categoria
+              </option>
+
+              <option value="lixo">
+                🗑️ Lixo
+              </option>
+
+              <option value="mato">
+                🌿 Mato alto
+              </option>
+
+              <option value="mosquito">
+                🦟 Foco de mosquito
+              </option>
+
+              <option value="outro">
+                📌 Outro problema
+              </option>
+
             </select>
 
-            {/* 💡 orientação */}
-            <p className="text-xs text-gray-500 mt-1">
-              Este aplicativo é destinado a denúncias relacionadas a terrenos baldios.
-            </p>
+            {/* orientação */}
+            <div className="flex items-start gap-2 mt-3 bg-green-50 p-3 rounded-xl">
+
+              <ShieldAlert
+                size={18}
+                className="text-green-700 mt-0.5"
+              />
+
+              <p className="text-xs text-gray-600">
+                Este aplicativo é destinado a denúncias relacionadas
+                a terrenos baldios e problemas urbanos similares.
+              </p>
+
+            </div>
+
           </div>
 
           {/* Descrição */}
           <div>
-            <label className="text-sm text-gray-600">Descrição</label>
+
+            <label className="text-sm text-gray-600">
+              Descrição
+            </label>
+
             <textarea
-              placeholder="Descreva o problema ou selecione uma categoria..."
+              placeholder="Selecione uma categoria"
               className="w-full mt-1 p-3 border rounded-xl"
               rows="4"
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
             />
+
           </div>
 
-          <button className="bg-green-600 text-white py-3 rounded-xl hover:bg-green-700">
+          {/* BOTÃO */}
+          <button className="bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 transition">
+
             Enviar denúncia
+
           </button>
+
         </form>
+
       ) : (
+
         <div className="bg-white p-5 rounded-2xl shadow-md text-center">
 
+          {/* ÍCONE */}
+          <div className="flex justify-center mb-3">
+
+            <CircleCheckBig
+              size={50}
+              className="text-green-600"
+            />
+
+          </div>
+
           <h2 className="text-green-700 text-xl font-bold mb-2">
-            ✅ Denúncia enviada!
+            Denúncia enviada!
           </h2>
 
-          <p className="text-gray-600 mb-2">
-            Seu protocolo:
-          </p>
+          {/* protocolo */}
+          <div className="flex items-center justify-center gap-2 mb-3">
+
+            <BookOpen
+              size={18}
+              className="text-green-700"
+            />
+
+            <p className="text-gray-700 font-medium">
+              Protocolo:
+            </p>
+
+          </div>
 
           <p className="text-green-700 font-bold text-lg mb-4">
             {protocolo}
@@ -131,28 +215,39 @@ function FormularioRapido({ setTela, setDenuncias, setNotificacoes }) {
             Guarde esse número para acompanhar sua denúncia.
           </p>
 
-          {/* 🔥 DIFERENCIAL */}
-          <p className="text-sm text-gray-500 mb-4">
-            Sua denúncia será analisada. Caso não se enquadre nas finalidades do sistema, você será orientado.
-          </p>
+          {/* diferencial */}
+          <div className="bg-green-50 p-3 rounded-xl mb-4">
+
+            <p className="text-sm text-gray-600">
+              Sua denúncia será analisada. Caso não se enquadre
+              nas finalidades do sistema, você será orientado.
+            </p>
+
+          </div>
 
           <button
             onClick={() => setTela("dashboard")}
-            className="bg-green-600 text-white py-2 px-4 rounded-xl"
+            className="bg-green-600 text-white py-2 px-4 rounded-xl hover:bg-green-700 transition"
           >
             Voltar ao início
           </button>
+
         </div>
+
       )}
 
+      {/* voltar */}
       {!enviado && (
+
         <button
           onClick={() => setTela("nova")}
-          className="mt-4 text-white border border-white py-2 px-4 rounded-xl"
+          className="mt-4 text-white border border-white py-2 px-4 rounded-xl hover:bg-white hover:text-green-700 transition"
         >
           Voltar
         </button>
+
       )}
+
     </div>
   );
 }
