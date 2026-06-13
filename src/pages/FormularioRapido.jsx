@@ -73,6 +73,7 @@ function FormularioRapido({
       {
         mensagem: "Sua denúncia foi enviada com sucesso",
         data: new Date().toLocaleDateString(),
+        usuario: usuario?.nome || "Visitante",
       },
       ...prev,
     ]);

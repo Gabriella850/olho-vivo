@@ -1,4 +1,8 @@
-function Notificacoes({ notificacoes, setTela }) {
+function Notificacoes({ notificacoes, setTela,usuario, }) {
+
+  const notificacoesUsuario = notificacoes.filter(
+  (n) => n.usuario === usuario?.nome
+);
   return (
     <div className="min-h-screen bg-gray-100 p-6">
 
@@ -6,13 +10,13 @@ function Notificacoes({ notificacoes, setTela }) {
         Notificações
       </h1>
 
-      {notificacoes.length === 0 ? (
+      {notificacoesUsuario.length === 0 ? (
         <p className="text-gray-600">
           Você não possui notificações.
         </p>
       ) : (
         <div className="flex flex-col gap-3">
-          {notificacoes.map((n, index) => (
+          {notificacoesUsuario.map((n, index) => (
             <div
               key={index}
               className="bg-white p-4 rounded-xl shadow"

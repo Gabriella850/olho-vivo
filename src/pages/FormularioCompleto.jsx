@@ -8,6 +8,7 @@ function FormularioCompleto({
   setTela,
   setDenuncias,
   setNotificacoes,
+  usuario,
 }) {
 
   const [passo, setPasso] = useState(1);
@@ -40,7 +41,7 @@ function FormularioCompleto({
       protocolo: novoProtocolo,
       status: "Em análise",
       data: new Date().toLocaleDateString(),
-      usuario: usuario.nome,
+      usuario: usuario?.nome || "Visitante",
     };
 
     setDenuncias((prev) => [...prev, novaDenuncia]);
@@ -50,6 +51,7 @@ function FormularioCompleto({
         mensagem:
           "Sua denúncia foi registrada e está em análise",
         data: new Date().toLocaleDateString(),
+        usuario: usuario?.nome || "Visitante",
       },
       ...prev,
     ]);

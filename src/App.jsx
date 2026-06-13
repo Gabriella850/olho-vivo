@@ -44,7 +44,7 @@ if (tela === "completo") {
         setTela={setTela} 
         setDenuncias={setDenuncias} 
         setNotificacoes={setNotificacoes}
-         usuario={usuario} 
+        usuario={usuario} 
       />
       <ChatAjuda />
     </>
@@ -72,7 +72,7 @@ if (tela === "minhas") {
 if (tela === "notificacoes") {
   return (
     <>
-      <Notificacoes notificacoes={notificacoes} setTela={setTela} />
+      <Notificacoes notificacoes={notificacoes} setTela={setTela} usuario={usuario} />
       <ChatAjuda />
     </>
   );
