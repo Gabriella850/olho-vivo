@@ -16,7 +16,7 @@ function Dashboard({ setTela, usuario, setUsuario }) {
         <div className="flex items-center gap-2">
 
           <h1 className="text-2xl font-bold">
-            Olá, {usuario.nome}
+            Olá, {usuario.usuario || usuario.nome}
           </h1>
 
           <Handshake
