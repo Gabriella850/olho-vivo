@@ -13,6 +13,7 @@ function FormularioRapido({
   setTela,
   setDenuncias,
   setNotificacoes,
+  usuario,
 }) {
 
   const [categoria, setCategoria] = useState("");
@@ -63,6 +64,7 @@ function FormularioRapido({
       protocolo: novoProtocolo,
       status: "Recebido",
       data: new Date().toLocaleDateString(),
+      usuario: usuario.nome,
     };
 
     setDenuncias((prev) => [...prev, novaDenuncia]);

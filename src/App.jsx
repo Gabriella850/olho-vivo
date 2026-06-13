@@ -31,7 +31,7 @@ function App() {
   if (tela === "rapido") {
   return (
     <>
-      <FormularioRapido setTela={setTela} setDenuncias={setDenuncias} setNotificacoes={setNotificacoes} />
+      <FormularioRapido setTela={setTela} setDenuncias={setDenuncias} setNotificacoes={setNotificacoes}  usuario={usuario}/>
       <ChatAjuda />
     </>
   );
@@ -43,7 +43,8 @@ if (tela === "completo") {
        <FormularioCompleto 
         setTela={setTela} 
         setDenuncias={setDenuncias} 
-        setNotificacoes={setNotificacoes} 
+        setNotificacoes={setNotificacoes}
+         usuario={usuario} 
       />
       <ChatAjuda />
     </>
@@ -62,7 +63,7 @@ if (tela === "completo") {
 if (tela === "minhas") {
   return (
     <>
-      <MinhasDenuncias denuncias={denuncias} setTela={setTela} />
+      <MinhasDenuncias denuncias={denuncias.filter((d) => d.usuario === usuario.nome)}setTela={setTela} />
       <ChatAjuda />
     </>
   );

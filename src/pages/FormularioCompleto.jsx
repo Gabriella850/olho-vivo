@@ -40,6 +40,7 @@ function FormularioCompleto({
       protocolo: novoProtocolo,
       status: "Em análise",
       data: new Date().toLocaleDateString(),
+      usuario: usuario.nome,
     };
 
     setDenuncias((prev) => [...prev, novaDenuncia]);
