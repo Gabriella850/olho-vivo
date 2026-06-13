@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "../services/supabase";
 import {
   CircleCheckBig,
   BookOpen,
@@ -30,35 +31,50 @@ function FormularioCompleto({
 
   const voltar = () => setPasso(passo - 1);
 
-  const handleSubmit = () => {
+const handleSubmit = async () => {
 
-    const novoProtocolo = gerarProtocolo();
+  const novoProtocolo = gerarProtocolo();
 
-    const novaDenuncia = {
-      categoria,
-      descricao,
-      endereco,
-      protocolo: novoProtocolo,
-      status: "Em análise",
-      data: new Date().toLocaleDateString(),
-      usuario: usuario?.nome || "Visitante",
-    };
-
-    setDenuncias((prev) => [...prev, novaDenuncia]);
-
-    setNotificacoes((prev) => [
-      {
-        mensagem:
-          "Sua denúncia foi registrada e está em análise",
-        data: new Date().toLocaleDateString(),
-        usuario: usuario?.nome || "Visitante",
-      },
-      ...prev,
-    ]);
-
-    setProtocolo(novoProtocolo);
-    setEnviado(true);
+  const novaDenuncia = {
+    usuario: usuario?.usuario || usuario?.nome || "Visitante",
+    categoria,
+    descricao,
+    endereco,
+    protocolo: novoProtocolo,
+    status: "Em análise",
+    data: new Date().toLocaleDateString(),
   };
+
+  const { error } = await supabase
+    .from("denuncias")
+    .insert([novaDenuncia]);
+
+  if (error) {
+    console.error(error);
+    alert("Erro ao enviar denúncia!");
+    return;
+  }
+
+  const novaNotificacao = {
+    usuario: usuario?.usuario || usuario?.nome || "Visitante",
+    mensagem: "Sua denúncia foi registrada e está em análise",
+    data: new Date().toLocaleDateString(),
+  };
+
+  await supabase
+    .from("notificacoes")
+    .insert([novaNotificacao]);
+
+  setDenuncias((prev) => [...prev, novaDenuncia]);
+
+  setNotificacoes((prev) => [
+    novaNotificacao,
+    ...prev,
+  ]);
+
+  setProtocolo(novoProtocolo);
+  setEnviado(true);
+};
 
   const pegarLocalizacao = () => {
 

@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "./services/supabase";
+
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NovaDenuncia from "./components/NovaDenuncia";
@@ -15,69 +17,121 @@ function App() {
   const [usuario, setUsuario] = useState(null);
   const [tela, setTela] = useState("dashboard");
 
+  useEffect(() => {
+    if (!usuario || usuario.usuario === "visitante") return;
+
+    carregarDenuncias();
+    carregarNotificacoes();
+  }, [usuario]);
+
+  async function carregarDenuncias() {
+    const { data, error } = await supabase
+      .from("denuncias")
+      .select("*")
+      .eq("usuario", usuario.usuario);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    setDenuncias(data || []);
+  }
+
+  async function carregarNotificacoes() {
+    const { data, error } = await supabase
+      .from("notificacoes")
+      .select("*")
+      .eq("usuario", usuario.usuario);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    setNotificacoes(data || []);
+  }
+
   if (!usuario) {
-  return <Login onLogin={setUsuario} />;
-}
+    return <Login onLogin={setUsuario} />;
+  }
 
   if (tela === "dashboard") {
     return (
       <>
-        <Dashboard setTela={setTela} usuario={usuario} setUsuario={setUsuario} />
+        <Dashboard
+          setTela={setTela}
+          usuario={usuario}
+          setUsuario={setUsuario}
+        />
         <ChatAjuda />
       </>
     );
   }
 
   if (tela === "rapido") {
-  return (
-    <>
-      <FormularioRapido setTela={setTela} setDenuncias={setDenuncias} setNotificacoes={setNotificacoes}  usuario={usuario}/>
-      <ChatAjuda />
-    </>
-  );
-}
+    return (
+      <>
+        <FormularioRapido
+          setTela={setTela}
+          setDenuncias={setDenuncias}
+          setNotificacoes={setNotificacoes}
+          usuario={usuario}
+        />
+        <ChatAjuda />
+      </>
+    );
+  }
 
-if (tela === "completo") {
-  return (
-    <>
-       <FormularioCompleto 
-        setTela={setTela} 
-        setDenuncias={setDenuncias} 
-        setNotificacoes={setNotificacoes}
-        usuario={usuario} 
-      />
-      <ChatAjuda />
-    </>
-  );
-}
+  if (tela === "completo") {
+    return (
+      <>
+        <FormularioCompleto
+          setTela={setTela}
+          setDenuncias={setDenuncias}
+          setNotificacoes={setNotificacoes}
+          usuario={usuario}
+        />
+        <ChatAjuda />
+      </>
+    );
+  }
 
- if (tela === "nova") {
-  return (
-    <>
-      <EscolhaDenuncia setTela={setTela} />
-      <ChatAjuda />
-    </>
-  );
-}
+  if (tela === "nova") {
+    return (
+      <>
+        <EscolhaDenuncia setTela={setTela} />
+        <ChatAjuda />
+      </>
+    );
+  }
 
-if (tela === "minhas") {
-  return (
-    <>
-      <MinhasDenuncias denuncias={denuncias.filter((d) => d.usuario === usuario.nome)}setTela={setTela} />
-      <ChatAjuda />
-    </>
-  );
-}
+  if (tela === "minhas") {
+    return (
+      <>
+        <MinhasDenuncias
+          denuncias={denuncias}
+          setTela={setTela}
+        />
+        <ChatAjuda />
+      </>
+    );
+  }
 
-if (tela === "notificacoes") {
-  return (
-    <>
-      <Notificacoes notificacoes={notificacoes} setTela={setTela} usuario={usuario} />
-      <ChatAjuda />
-    </>
-  );
-}
+  if (tela === "notificacoes") {
+    return (
+      <>
+        <Notificacoes
+          notificacoes={notificacoes}
+          setTela={setTela}
+          usuario={usuario}
+        />
+        <ChatAjuda />
+      </>
+    );
+  }
+
+  return null;
 }
 
 export default App;
-//TESTE

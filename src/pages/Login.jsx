@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "../services/supabase";
 import logo from "../assets/logo.png";
 
 function Login({ onLogin }) {
@@ -7,7 +8,7 @@ function Login({ onLogin }) {
   const [senha, setSenha] = useState("");
   const [modoCadastro, setModoCadastro] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!usuario || !senha || (modoCadastro && !nome)) {
@@ -16,16 +17,55 @@ function Login({ onLogin }) {
     }
 
     if (modoCadastro) {
+      const { data: usuarioExistente } = await supabase
+        .from("usuarios")
+        .select("*")
+        .eq("usuario", usuario)
+        .single();
+
+      if (usuarioExistente) {
+        alert("Nome de usuário já existe!");
+        return;
+      }
+
+      const { error } = await supabase
+        .from("usuarios")
+        .insert([
+          {
+            nome,
+            usuario,
+            senha,
+          },
+        ]);
+
+      if (error) {
+        console.error(error);
+        alert("Erro ao criar conta!");
+        return;
+      }
+
       alert("Conta criada com sucesso!");
 
       onLogin({
-        nome,
+        nome: usuario,
         usuario,
       });
     } else {
+      const { data, error } = await supabase
+        .from("usuarios")
+        .select("*")
+        .eq("usuario", usuario)
+        .eq("senha", senha)
+        .single();
+
+      if (error || !data) {
+        alert("Usuário ou senha incorretos!");
+        return;
+      }
+
       onLogin({
-        nome: usuario,
-        usuario,
+        nome: data.usuario,
+        usuario: data.usuario,
       });
     }
   };
@@ -85,7 +125,10 @@ function Login({ onLogin }) {
               "Você poderá enviar denúncias anonimamente, porém elas não ficarão salvas para acompanhamento futuro."
             );
 
-            onLogin({ nome: "Visitante" });
+            onLogin({
+              nome: "Visitante",
+              usuario: "visitante",
+            });
           }}
           className="block mx-auto text-sm text-green-700 mt-4 underline"
         >
@@ -100,11 +143,11 @@ function Login({ onLogin }) {
             ? "Já tem conta? Fazer login"
             : "Não tem conta? Criar conta"}
         </p>
-        
+
         <p className="text-xs text-center text-gray-500 mt-4">
           Este sistema é um protótipo acadêmico desenvolvido para a disciplina de
-          Projeto Integrador de Extensão V. As funcionalidades apresentadas possuem
-          caráter demonstrativo.
+          Projeto Integrador de Extensão V. As funcionalidades apresentadas
+          possuem caráter demonstrativo.
         </p>
       </form>
     </div>

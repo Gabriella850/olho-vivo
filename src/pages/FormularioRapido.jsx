@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "../services/supabase";
 import {
   Trash2,
   Trees,
@@ -47,40 +48,56 @@ function FormularioRapido({
     }
   };
 
-  const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    e.preventDefault();
+  if (!categoria || !descricao) {
+    alert("Preencha todos os campos!");
+    return;
+  }
 
-    if (!categoria || !descricao) {
-      alert("Preencha todos os campos!");
-      return;
-    }
+  const novoProtocolo = gerarProtocolo();
 
-    const novoProtocolo = gerarProtocolo();
-
-    const novaDenuncia = {
-      categoria,
-      descricao,
-      protocolo: novoProtocolo,
-      status: "Recebido",
-      data: new Date().toLocaleDateString(),
-      usuario: usuario.nome,
-    };
-
-    setDenuncias((prev) => [...prev, novaDenuncia]);
-
-    setNotificacoes((prev) => [
-      {
-        mensagem: "Sua denúncia foi enviada com sucesso",
-        data: new Date().toLocaleDateString(),
-        usuario: usuario?.nome || "Visitante",
-      },
-      ...prev,
-    ]);
-
-    setProtocolo(novoProtocolo);
-    setEnviado(true);
+  const novaDenuncia = {
+    usuario: usuario?.usuario || usuario?.nome || "Visitante",
+    categoria,
+    descricao,
+    endereco: "Não informado",
+    protocolo: novoProtocolo,
+    status: "Recebido",
+    data: new Date().toLocaleDateString(),
   };
+
+  const { error } = await supabase
+    .from("denuncias")
+    .insert([novaDenuncia]);
+
+  if (error) {
+    console.error(error);
+    alert("Erro ao enviar denúncia!");
+    return;
+  }
+
+  setDenuncias((prev) => [...prev, novaDenuncia]);
+
+  const novaNotificacao = {
+    usuario: usuario?.usuario || usuario?.nome || "Visitante",
+    mensagem: "Sua denúncia foi enviada com sucesso",
+    data: new Date().toLocaleDateString(),
+  };
+
+  await supabase
+    .from("notificacoes")
+    .insert([novaNotificacao]);
+
+  setNotificacoes((prev) => [
+    novaNotificacao,
+    ...prev,
+  ]);
+
+  setProtocolo(novoProtocolo);
+  setEnviado(true);
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-500 to-green-700 p-6">
